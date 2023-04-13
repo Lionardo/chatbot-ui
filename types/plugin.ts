@@ -13,10 +13,12 @@ export interface PluginKey {
 
 export enum PluginID {
   GOOGLE_SEARCH = 'google-search',
+  WOLFRAM = 'wolfram',
 }
 
 export enum PluginName {
   GOOGLE_SEARCH = 'Google Search',
+  WOLFRAM = 'wolfram',
 }
 
 export const Plugins: Record<PluginID, Plugin> = {
@@ -33,6 +35,11 @@ export const Plugins: Record<PluginID, Plugin> = {
         value: '',
       },
     ],
+  },
+  [PluginID.WOLFRAM]: {
+    id: PluginID.WOLFRAM,
+    name: PluginName.WOLFRAM,
+    requiredKeys: [],
   },
 };
 

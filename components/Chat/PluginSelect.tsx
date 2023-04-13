@@ -59,6 +59,9 @@ export const PluginSelect: FC<Props> = ({
       selectRef.current.focus();
     }
   }, []);
+  useEffect(() => {
+    console.log('in browser', PluginList);
+  }, [PluginList]);
 
   return (
     <div className="flex flex-col">

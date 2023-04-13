@@ -47,6 +47,9 @@ export const ChatbarSettings = () => {
         icon={<IconFileExport size={18} />}
         onClick={() => handleExportData()}
       />
+      {!serverSideApiKeyIsSet ? (
+        <Key apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
+      ) : null}
 
       <SidebarButton
         text={lightMode === 'light' ? t('Dark mode') : t('Light mode')}
@@ -61,11 +64,7 @@ export const ChatbarSettings = () => {
         }
       />
 
-      {!serverSideApiKeyIsSet ? (
-        <Key apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
-      ) : null}
-
-      {!serverSidePluginKeysSet ? <PluginKeys /> : null}
+      {/* {!serverSidePluginKeysSet ? <PluginKeys /> : null} */}
     </div>
   );
 };

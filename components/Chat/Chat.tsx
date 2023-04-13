@@ -56,7 +56,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
     handleUpdateConversation,
     dispatch: homeDispatch,
   } = useContext(HomeContext);
-
+  const [newselectedConversation, setnewselectedConversation] =
+    useState(selectedConversation);
   const [currentMessage, setCurrentMessage] = useState<Message>();
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true);
   const [showSettings, setShowSettings] = useState<boolean>(false);
@@ -129,6 +130,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           return;
         }
         const data = response.body;
+
         if (!data) {
           homeDispatch({ field: 'loading', value: false });
           homeDispatch({ field: 'messageIsStreaming', value: false });
@@ -145,6 +147,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             };
           }
           homeDispatch({ field: 'loading', value: false });
+
           const reader = data.getReader();
           const decoder = new TextDecoder();
           let done = false;
@@ -189,6 +192,11 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                 ...updatedConversation,
                 messages: updatedMessages,
               };
+
+              console.log(
+                'CHECK IN BROWSER !plugin updatedConversation \n \n',
+                updatedConversation,
+              );
               homeDispatch({
                 field: 'selectedConversation',
                 value: updatedConversation,
@@ -220,9 +228,10 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             ...updatedConversation,
             messages: updatedMessages,
           };
+
           homeDispatch({
             field: 'selectedConversation',
-            value: updateConversation,
+            value: updatedConversation, //TODO: check if this is correct
           });
           saveConversation(updatedConversation);
           const updatedConversations: Conversation[] = conversations.map(
@@ -315,10 +324,13 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
 
   useEffect(() => {
     throttledScrollDown();
-    selectedConversation &&
+    setnewselectedConversation(selectedConversation);
+
+    if (selectedConversation?.messages) {
       setCurrentMessage(
         selectedConversation.messages[selectedConversation.messages.length - 2],
       );
+    }
   }, [selectedConversation, throttledScrollDown]);
 
   useEffect(() => {
@@ -394,7 +406,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             ref={chatContainerRef}
             onScroll={handleScroll}
           >
-            {selectedConversation?.messages.length === 0 ? (
+            {selectedConversation?.messages?.length === 0 ? (
               <>
                 <div className="mx-auto flex w-[350px] flex-col space-y-10 pt-12 sm:w-[600px]">
                   <div className="text-center text-3xl font-semibold text-gray-800 dark:text-gray-100">
@@ -428,7 +440,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             ) : (
               <>
                 <div className="flex justify-center border border-b-neutral-300 bg-neutral-100 py-2 text-sm text-neutral-500 dark:border-none dark:bg-[#444654] dark:text-neutral-200">
-                  {t('Model')}: {selectedConversation?.model.name}
+                  {t('Model')}: {selectedConversation?.model?.name}
                   <button
                     className="ml-2 cursor-pointer hover:opacity-50"
                     onClick={handleSettings}
@@ -450,7 +462,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                   </div>
                 )}
 
-                {selectedConversation?.messages.map((message, index) => (
+                {selectedConversation?.messages?.map((message, index) => (
                   <ChatMessage
                     key={index}
                     message={message}
