@@ -32,6 +32,7 @@ import { ChatMessage } from './ChatMessage';
 import { ErrorMessageDiv } from './ErrorMessageDiv';
 import { ModelSelect } from './ModelSelect';
 import { SystemPrompt } from './SystemPrompt';
+import { TemperatureSlider } from './Temperature';
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>;
@@ -98,6 +99,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           messages: updatedConversation.messages,
           key: apiKey,
           prompt: updatedConversation.prompt,
+          temperature: updatedConversation.temperature
         };
         const endpoint = getEndpoint(plugin);
         let body;
@@ -433,6 +435,16 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
                           })
                         }
                       />
+
+                      <TemperatureSlider
+                          label="Temperature"
+                          onChangeTemperature={(temperature) =>
+                            handleUpdateConversation(selectedConversation, {
+                              key: 'temperature',
+                              value: temperature,
+                            })
+                          }
+                        />
                     </div>
                   )}
                 </div>
